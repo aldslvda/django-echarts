@@ -2,11 +2,13 @@
 """Template tags for django-echarts.
 
 """
-
+import json
 from django import template
 
 from django_echarts.conf import DJANGO_ECHARTS_SETTINGS
 from django_echarts.utils.interfaces import to_css_length, JsDumper, merge_js_dependencies
+
+from pyecharts_javascripthon.api import DefaultJsonEncoder
 
 register = template.Library()
 
@@ -43,10 +45,11 @@ def build_echarts_initial_fragment(*charts):
           '''
         renderer = getattr(chart, 'renderer', DJANGO_ECHARTS_SETTINGS.get('renderer'))
         div_v_name = "div_{0}".format(chart.chart_id)
+        option_snippet = json.dumps(chart.options, indent=4, cls=DefaultJsonEncoder)
         js_content = content_fmt.format(
             init_params=JsDumper.as_parameters(div_v_name, None, {'renderer': renderer}, variables=[div_v_name]),
             chart_id=chart.chart_id,
-            options=JsDumper.as_object(chart.options)
+            options=option_snippet
         )
         contents.append(js_content)
     return '\n'.join(contents)

@@ -1,7 +1,7 @@
 # coding=utf8
 
 
-from borax.fetch import fetch
+from django_echarts.datasets.fetch import fetch
 
 from django.db.models import Count
 from pyecharts import Line, Pie, Page, Bar
